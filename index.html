@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holding Contract Generator</title>
+<style>
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #222;
+    }
+    .container {
+        max-width: 1100px;
+        margin: 35px auto;
+        padding: 0 20px;
+    }
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 14px rgba(0,0,0,.08);
+    }
+    h1 { margin-top: 0; }
+    h2 { font-size: 20px; margin-top: 0; }
+    .subtitle { color: #666; }
+    label {
+        display: block;
+        font-weight: 600;
+        margin: 14px 0 7px;
+    }
+    input[type="file"], input[type="text"], select {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 7px;
+        font-size: 14px;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 20px;
+    }
+    .field-group {
+        border: 1px solid #e1e5e8;
+        border-radius: 9px;
+        padding: 15px;
+        margin-bottom: 14px;
+    }
+    .field-group h3 {
+        margin: 0 0 5px;
+        font-size: 15px;
+    }
+    .field-group p {
+        margin: 0 0 10px;
+        font-size: 12px;
+        color: #777;
+    }
+    button {
+        border: 0;
+        border-radius: 7px;
+        padding: 12px 20px;
+        font-size: 15px;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+    .primary { background: #1769aa; color: white; }
+    .secondary { background: #e9ecef; color: #222; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .message {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 7px;
+        display: none;
+    }
+    .success { background: #e7f6ec; color: #176b35; }
+    .error { background: #fdecec; color: #a11; }
+    .info { background: #eef5ff; color: #174a7a; }
+    .hidden { display: none; }
+    .mapping {
+        background: #fafafa;
+        border: 1px solid #eee;
+        padding: 12px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+    @media (max-width: 750px) {
+        .grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="card">
+        <h1>Holding Contract Generator</h1>
+        <p class="subtitle">
+            Upload the contracts CSV, select a PRODUCT_ID, enter values for the blank fields,
+            and generate the Endur-style CSV.
+        </p>
+
+        <label for="csvFile">Input CSV file</label>
+        <input type="file" id="csvFile" accept=".csv,text/csv">
+
+        <label for="productId">PRODUCT_ID</label>
+        <input type="text" id="productId" placeholder="Example: FZBM">
+
+        <div id="fileInfo" class="message info"></div>
+    </div>
+
+    <div class="card">
+        <h2>Values for blank fields</h2>
+        <p class="subtitle">
+            These values will be applied to every generated row for the selected PRODUCT_ID.
+            Leave a field blank if you want the generated CSV field to remain blank.
+        </p>
+
+        <div class="grid">
+
+            <div class="field-group">
+                <h3>proj_index_0</h3>
+                <p>Value to use for the project index.</p>
+                <input type="text" data-field="proj_index_0">
+            </div>
+
+            <div class="field-group">
+                <h3>ins_type_0</h3>
+                <p>Value to use for instrument type.</p>
+                <input type="text" data-field="ins_type_0">
+            </div>
+
+            <div class="field-group">
+                <h3>external_bunit_0</h3>
+                <p>Value to use for external business unit.</p>
+                <input type="text" data-field="external_bunit_0">
+            </div>
+
+            <div class="field-group">
+                <h3>external_lentity_0</h3>
+                <p>Value to use for external legal entity.</p>
+                <input type="text" data-field="external_lentity_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reset_conv_0</h3>
+                <p>Value to use for reset convention.</p>
+                <input type="text" data-field="reset_conv_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reset_period_0</h3>
+                <p>Value to use for reset period.</p>
+                <input type="text" data-field="reset_period_0">
+            </div>
+
+            <div class="field-group">
+                <h3>notnl_0</h3>
+                <p>Value to use for notional.</p>
+                <input type="text" data-field="notnl_0">
+            </div>
+
+            <div class="field-group">
+                <h3>portfolio_group_0</h3>
+                <p>Value to use for portfolio group.</p>
+                <input type="text" data-field="portfolio_group_0">
+            </div>
+
+            <div class="field-group">
+                <h3>margin_type_0</h3>
+                <p>Value to use for margin type.</p>
+                <input type="text" data-field="margin_type_0">
+            </div>
+
+            <div class="field-group">
+                <h3>market_px_lookup_type_0</h3>
+                <p>Value to use for market price lookup type.</p>
+                <input type="text" data-field="market_px_lookup_type_0">
+            </div>
+
+            <div class="field-group">
+                <h3>market_px_index_0</h3>
+                <p>Value to use for market price index.</p>
+                <input type="text" data-field="market_px_index_0">
+            </div>
+
+            <div class="field-group">
+                <h3>tick_size_0</h3>
+                <p>Value to use for tick size.</p>
+                <input type="text" data-field="tick_size_0">
+            </div>
+
+            <div class="field-group">
+                <h3>price_inp_format_0</h3>
+                <p>Value to use for price input format.</p>
+                <input type="text" data-field="price_inp_format_0">
+            </div>
+
+            <div class="field-group">
+                <h3>settlement_type_0</h3>
+                <p>Value to use for settlement type.</p>
+                <input type="text" data-field="settlement_type_0">
+            </div>
+
+            <div class="field-group">
+                <h3>hol_list_0</h3>
+                <p>Value to use for holiday list.</p>
+                <input type="text" data-field="hol_list_0">
+            </div>
+
+            <div class="field-group">
+                <h3>roll_conv_0</h3>
+                <p>Value to use for roll convention.</p>
+                <input type="text" data-field="roll_conv_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reset_roll_conv_0</h3>
+                <p>Value to use for reset roll convention.</p>
+                <input type="text" data-field="reset_roll_conv_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reset_hol_list_0</h3>
+                <p>Value to use for reset holiday list.</p>
+                <input type="text" data-field="reset_hol_list_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reset_shift_0</h3>
+                <p>Value to use for reset shift.</p>
+                <input type="text" data-field="reset_shift_0">
+            </div>
+
+            <div class="field-group">
+                <h3>rfi_shift_0</h3>
+                <p>Value to use for RFI shift.</p>
+                <input type="text" data-field="rfi_shift_0">
+            </div>
+
+            <div class="field-group">
+                <h3>pymt_period_0</h3>
+                <p>Value to use for payment period.</p>
+                <input type="text" data-field="pymt_period_0">
+            </div>
+
+            <div class="field-group">
+                <h3>ref_source_0</h3>
+                <p>Value to use for reference source.</p>
+                <input type="text" data-field="ref_source_0">
+            </div>
+
+            <div class="field-group">
+                <h3>ticker_0</h3>
+                <p>Value to use for ticker.</p>
+                <input type="text" data-field="ticker_0">
+            </div>
+
+            <div class="field-group">
+                <h3>reference_0</h3>
+                <p>Value to use for reference.</p>
+                <input type="text" data-field="reference_0">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Automatic mappings</h2>
+        <div class="mapping">
+            PRODUCT_ID → contract_code_0<br>
+            FIRST_TRADING_DATE → first_trade_date_0<br>
+            LAST_TRADING_DATE → last_trade_date_0<br>
+            EXPIRY_DATE → expiration_date_0<br>
+            FIRST_DELIVERY_DATE → start_date_0<br>
+            LAST_DELIVERY_DATE → mat_date_0<br>
+            FIRST_DELIVERY_DATE → first_delivery_date_0<br>
+            LAST_DELIVERY_DATE → last_delivery_date_0
+        </div>
+    </div>
+
+    <div class="card">
+        <button class="primary" id="generateBtn">Generate CSV</button>
+        <button class="secondary" id="clearBtn">Clear</button>
+        <div id="result" class="message"></div>
+    </div>
+
+</div>
+
+<script>
+const outputHeaders = [
+    "proj_index_0",
+    "ins_type_0",
+    "external_bunit_0",
+    "external_lentity_0",
+    "contract_code_0",
+    "reset_conv_0",
+    "notnl_0",
+    "portfolio_group_0",
+    "margin_type_0",
+    "market_px_lookup_type_0",
+    "market_px_index_0",
+    "tick_size_0",
+    "price_inp_format_0",
+    "settlement_type_0",
+    "hol_list_0",
+    "roll_conv_0",
+    "reset_roll_conv_0",
+    "reset_hol_list_0",
+    "reset_shift_0",
+    "rfi_shift_0",
+    "pymt_period_0",
+    "mat_date_0",
+    "start_date_0",
+    "first_delivery_date_0",
+    "last_delivery_date_0",
+    "ref_source_0",
+    "last_trade_date_0",
+    "expiration_date_0",
+    "first_trade_date_0",
+    "ticker_0",
+    "reference_0"
+];
+
+function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let cell = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+
+        if (c === '"') {
+            if (inQuotes && text[i + 1] === '"') {
+                cell += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (c === ',' && !inQuotes) {
+            row.push(cell);
+            cell = "";
+        } else if ((c === '\n' || c === '\r') && !inQuotes) {
+            if (c === '\r' && text[i + 1] === '\n') i++;
+            row.push(cell);
+            cell = "";
+            if (row.some(v => v.trim() !== "")) rows.push(row);
+            row = [];
+        } else {
+            cell += c;
+        }
+    }
+
+    if (cell !== "" || row.length > 0) {
+        row.push(cell);
+        if (row.some(v => v.trim() !== "")) rows.push(row);
+    }
+
+    return rows;
+}
+
+function escapeCSV(value) {
+    value = value == null ? "" : String(value);
+    if (/[",\r\n]/.test(value)) {
+        return '"' + value.replace(/"/g, '""') + '"';
+    }
+    return value;
+}
+
+function normalizeHeader(value) {
+    return String(value || "").replace(/^\uFEFF/, "").trim().toUpperCase();
+}
+
+function showMessage(element, text, type) {
+    element.textContent = text;
+    element.className = "message " + type;
+    element.style.display = "block";
+}
+
+document.getElementById("csvFile").addEventListener("change", function() {
+    const file = this.files[0];
+    const info = document.getElementById("fileInfo");
+
+    if (file) {
+        showMessage(info, "Selected file: " + file.name, "info");
+    } else {
+        info.style.display = "none";
+    }
+});
+
+document.getElementById("generateBtn").addEventListener("click", async function() {
+    const fileInput = document.getElementById("csvFile");
+    const productId = document.getElementById("productId").value.trim();
+    const result = document.getElementById("result");
+
+    if (!fileInput.files.length) {
+        showMessage(result, "Please select the input CSV file.", "error");
+        return;
+    }
+
+    if (!productId) {
+        showMessage(result, "Please enter PRODUCT_ID.", "error");
+        return;
+    }
+
+    try {
+        const text = await fileInput.files[0].text();
+        const rows = parseCSV(text);
+
+        if (rows.length < 2) {
+            showMessage(result, "The CSV is empty or contains no data rows.", "error");
+            return;
+        }
+
+        const headers = rows[0].map(normalizeHeader);
+
+        const indexOf = (name) => headers.indexOf(name);
+
+        const productIdIndex = indexOf("PRODUCT_ID");
+        const firstTradingIndex = indexOf("FIRST_TRADING_DATE");
+        const lastTradingIndex = indexOf("LAST_TRADING_DATE");
+        const expiryIndex = indexOf("EXPIRY_DATE");
+        const firstDeliveryIndex = indexOf("FIRST_DELIVERY_DATE");
+        const lastDeliveryIndex = indexOf("LAST_DELIVERY_DATE");
+
+        const required = {
+            PRODUCT_ID: productIdIndex,
+            FIRST_TRADING_DATE: firstTradingIndex,
+            LAST_TRADING_DATE: lastTradingIndex,
+            EXPIRY_DATE: expiryIndex,
+            FIRST_DELIVERY_DATE: firstDeliveryIndex,
+            LAST_DELIVERY_DATE: lastDeliveryIndex
+        };
+
+        const missing = Object.keys(required).filter(k => required[k] === -1);
+
+        if (missing.length) {
+            showMessage(
+                result,
+                "Missing required input columns: " + missing.join(", "),
+                "error"
+            );
+            return;
+        }
+
+        // Read user-entered values for blank fields.
+        const userValues = {};
+        document.querySelectorAll("[data-field]").forEach(input => {
+            userValues[input.dataset.field] = input.value.trim();
+        });
+
+        const matchingRows = rows.slice(1).filter(row => {
+            return String(row[productIdIndex] || "").trim() === productId;
+        });
+
+        if (!matchingRows.length) {
+            showMessage(
+                result,
+                "No records found for PRODUCT_ID: " + productId,
+                "error"
+            );
+            return;
+        }
+
+        const outputRows = [outputHeaders];
+
+        matchingRows.forEach(row => {
+            const firstTrading = row[firstTradingIndex] || "";
+            const lastTrading = row[lastTradingIndex] || "";
+            const expiry = row[expiryIndex] || "";
+            const firstDelivery = row[firstDeliveryIndex] || "";
+            const lastDelivery = row[lastDeliveryIndex] || "";
+
+            const values = {};
+
+            // User-provided fields
+            outputHeaders.forEach(h => {
+                values[h] = userValues[h] || "";
+            });
+
+            // Automatic fields
+            values["contract_code_0"] = productId;
+            values["mat_date_0"] = lastDelivery;
+            values["start_date_0"] = firstDelivery;
+            values["first_delivery_date_0"] = firstDelivery;
+            values["last_delivery_date_0"] = lastDelivery;
+            values["last_trade_date_0"] = lastTrading;
+            values["expiration_date_0"] = expiry;
+            values["first_trade_date_0"] = firstTrading;
+
+            outputRows.push(
+                outputHeaders.map(h => values[h] || "")
+            );
+        });
+
+        const csvContent = outputRows
+            .map(row => row.map(escapeCSV).join(","))
+            .join("\r\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "contract_" + productId + ".csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        showMessage(
+            result,
+            "CSV generated successfully. " +
+            matchingRows.length +
+            " record(s) generated for PRODUCT_ID " +
+            productId + ".",
+            "success"
+        );
+
+    } catch (error) {
+        showMessage(result, "Error: " + error.message, "error");
+    }
+});
+
+document.getElementById("clearBtn").addEventListener("click", function() {
+    document.getElementById("csvFile").value = "";
+    document.getElementById("productId").value = "";
+    document.querySelectorAll("[data-field]").forEach(input => input.value = "");
+    document.getElementById("fileInfo").style.display = "none";
+    document.getElementById("result").style.display = "none";
+});
+</script>
+</body>
+</html>
